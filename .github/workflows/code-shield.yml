@@ -21,7 +21,7 @@ jobs:
             -H "Content-Type: application/json" \
             -d '{
               "repoUrl": "${{ github.event.repository.clone_url }}",
-              "scanType": "code_security"
+              "scanType": "open_source"
             }')
 
           echo "Response: $RESPONSE"

@@ -1,4 +1,4 @@
-name: Code-Shield Local Scan
+name: CodeShield Scan
 
 on:
   push:
@@ -10,29 +10,53 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Send repo to local Code-Shield scanner
+      - name: 🔍 Initiate Security CodeShield Scan
         id: codeshield
         run: |
-          echo "Calling backend..."
-          RESPONSE=$(curl -s -X POST https://huge-owls-reply.loca.lt/scanGit \
+          RESPONSE=$(curl -s -X POST https://stale-tigers-win.loca.lt/scanGit \
             -H "Content-Type: application/json" \
             -d '{
               "repoUrl": "${{ github.event.repository.clone_url }}",
               "scanType": "open_source"
             }')
 
-          echo "Response: $RESPONSE"
-          
           STATUS=$(echo "$RESPONSE" | jq -r '.status')
           SUMMARY=$(echo "$RESPONSE" | jq -r '.summary')
+
+          # Save outputs for use in later steps
           echo "status=$STATUS" >> "$GITHUB_OUTPUT"
           echo "summary=$SUMMARY" >> "$GITHUB_OUTPUT"
 
-      - name: Fail if vulnerabilities found
+          # Clean final display
+          echo ""
+          echo "📘 Security Scan Summary"
+          echo "──────────────────────────────"
+          echo "🔎 Status     : ${STATUS^^}"
+          echo "📝 Summary    : $SUMMARY"
+          echo "──────────────────────────────"
+
+      - name: ❌ Block PR - High Risk Vulnerabilities Found
         if: steps.codeshield.outputs.status == 'fail'
         run: |
+          echo "🛑 Security scan failed:"
           echo "${{ steps.codeshield.outputs.summary }}"
           exit 1
+
+      - name: ✅ Security Scan Passed
+        if: steps.codeshield.outputs.status == 'pass'
+        run: |
+          echo "🎉 Security scan passed successfully!"
+          echo "${{ steps.codeshield.outputs.summary }}"
+          echo "Your code is secure and ready for deployment."
+
+      - name: 📊 Security Scan Summary
+        if: steps.codeshield.outputs.status == 'pass'
+        run: |
+          echo "📘 Security Scan Summary"
+          echo "──────────────────────────────"
+          echo "🔎 Status     : ${{ steps.codeshield.outputs.status }}"
+          echo "📝 Summary    : ${{ steps.codeshield.outputs.summary }}"
+          echo "──────────────────────────────"

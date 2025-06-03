@@ -17,7 +17,7 @@ jobs:
         id: codeshield
         run: |
           echo "Calling backend..."
-          RESPONSE=$(curl -s -X POST https://eight-boxes-hide.loca.lt/scanGit \
+          RESPONSE=$(curl -s -X POST  https://fine-donkeys-camp.loca.lt/scanGit \
             -H "Content-Type: application/json" \
             -d '{
               "repoUrl": "${{ github.event.repository.clone_url }}",

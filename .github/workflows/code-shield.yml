@@ -15,7 +15,10 @@ jobs:
 
       - name: 🔍 Initiate Security CodeShield Scan
         id: codeshield
+        shell: bash
         run: |
+          echo "::group::Running CodeShield Scan"
+
           RESPONSE=$(curl -s -X POST https://stale-tigers-win.loca.lt/scanGit \
             -H "Content-Type: application/json" \
             -d '{
@@ -26,11 +29,11 @@ jobs:
           STATUS=$(echo "$RESPONSE" | jq -r '.status')
           SUMMARY=$(echo "$RESPONSE" | jq -r '.summary')
 
-          # Save outputs for use in later steps
           echo "status=$STATUS" >> "$GITHUB_OUTPUT"
           echo "summary=$SUMMARY" >> "$GITHUB_OUTPUT"
 
-          # Clean final display
+          echo "::endgroup::"
+
           echo ""
           echo "📘 Security Scan Summary"
           echo "──────────────────────────────"

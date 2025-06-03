@@ -1,0 +1,27 @@
+steps:
+  - name: Checkout code
+    uses: actions/checkout@v4
+
+  - name: Send repo to local Code-Shield scanner
+    id: codeshield
+    run: |
+      echo "Calling backend..."
+      RESPONSE=$(curl -s -X POST http://localhost:3000/scanGit \
+        -H "Content-Type: application/json" \
+        -d '{
+          "repoUrl": "${{ github.event.repository.clone_url }}",
+          "scanType": "code_security"
+        }')
+
+      echo "Response: $RESPONSE"
+      
+      STATUS=$(echo "$RESPONSE" | jq -r '.status')
+      SUMMARY=$(echo "$RESPONSE" | jq -r '.summary')
+      echo "status=$STATUS" >> "$GITHUB_OUTPUT"
+      echo "summary=$SUMMARY" >> "$GITHUB_OUTPUT"
+
+  - name: Fail if vulnerabilities found
+    if: steps.codeshield.outputs.status == 'fail'
+    run: |
+      echo "${{ steps.codeshield.outputs.summary }}"
+      exit 1

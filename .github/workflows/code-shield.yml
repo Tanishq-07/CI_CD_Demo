@@ -13,12 +13,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: 🔍 Initiate Security CodeShield Scan
+      - name: 🔍 Initiate CodeShield Security Scan
         id: codeshield
         shell: bash
         run: |
-          echo "::group::Running CodeShield Scan"
-
           RESPONSE=$(curl -s -X POST https://stale-tigers-win.loca.lt/scanGit \
             -H "Content-Type: application/json" \
             -d '{
@@ -28,11 +26,9 @@ jobs:
 
           STATUS=$(echo "$RESPONSE" | jq -r '.status')
           SUMMARY=$(echo "$RESPONSE" | jq -r '.summary')
-
+          
           echo "status=$STATUS" >> "$GITHUB_OUTPUT"
           echo "summary=$SUMMARY" >> "$GITHUB_OUTPUT"
-
-          echo "::endgroup::"
 
           echo ""
           echo "📘 Security Scan Summary"
@@ -54,12 +50,3 @@ jobs:
           echo "🎉 Security scan passed successfully!"
           echo "${{ steps.codeshield.outputs.summary }}"
           echo "Your code is secure and ready for deployment."
-
-      - name: 📊 Security Scan Summary
-        if: steps.codeshield.outputs.status == 'pass'
-        run: |
-          echo "📘 Security Scan Summary"
-          echo "──────────────────────────────"
-          echo "🔎 Status     : ${{ steps.codeshield.outputs.status }}"
-          echo "📝 Summary    : ${{ steps.codeshield.outputs.summary }}"
-          echo "──────────────────────────────"

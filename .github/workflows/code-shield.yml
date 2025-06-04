@@ -17,7 +17,7 @@ jobs:
         id: codeshield
         shell: bash
         run: |
-          RESPONSE=$(curl -s -X POST https://whole-seas-cheer.loca.lt/scanGit \
+          RESPONSE=$(curl -s -X POST ttps://sharp-laws-design.loca.lt/scanGit \
             -H "Content-Type: application/json" \
             -d '{
               "repoUrl": "${{ github.event.repository.clone_url }}",

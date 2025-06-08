@@ -17,7 +17,7 @@ jobs:
         id: codeshield
         shell: bash
         run: |
-          RESPONSE=$(curl -s -X POST codeshield-web-prod-server.vercel.app/scanGit \
+          RESPONSE=$(curl -s -X POST codeshield-web-prod-server.vercel.app/scanGit\
             -H "Content-Type: application/json" \
             -d '{
               "repoUrl": "${{ github.event.repository.clone_url }}",

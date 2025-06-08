@@ -17,7 +17,7 @@ jobs:
         id: codeshield
         shell: bash
         run: |
-          RESPONSE=$(curl -s -X POST https://fast-clubs-retire.loca.lt/scanGit\
+          RESPONSE=$(curl -s -X POST https://33c1-2401-4900-16d0-b9e2-d1f3-a61a-88aa-46f9.ngrok-free.app/scanGit\
             -H "Content-Type: application/json" \
             -d '{
               "repoUrl": "${{ github.event.repository.clone_url }}",

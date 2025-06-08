@@ -23,8 +23,6 @@ jobs:
               "repoUrl": "${{ github.event.repository.clone_url }}",
               "scanType": "open_source"
             }')
-          echo "Raw response:"
-          echo "$RESPONSE"
 
           STATUS=$(echo "$RESPONSE" | jq -r '.status')
           SUMMARY=$(echo "$RESPONSE" | jq -r '.summary')
